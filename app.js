@@ -1,9 +1,14 @@
 const express = require("express");
 const app = express();
-app.use(express.json());
+const routes = require('./routes/routes');
 const cors = require("cors");
-app.use(cors());
 require("dotenv").config();
+const sequelize = require("./config/config");
+const { createTopicIfNotExists } = require("./utils/admin");
+require('./models/userDetails.model');
+app.use(cors());
+app.use(express.json());
+app.use('/api/auth', routes);
 
 app.get("/health", (req, res) => {
   try {
@@ -15,11 +20,25 @@ app.get("/health", (req, res) => {
   }
 });
 
-const port = process.env.PORT || 3003;
-app.listen(port, (err) => {
-  if (err) {
-    console.log("Error in running server");
-    return;
+
+const port = process.env.PORT || 5000;
+
+const startServer=async()=>{
+  try{
+    const port = process.env.PORT || 5000;
+    await sequelize.authenticate();
+    console.log('Database connection has been established successfully.');
+     await sequelize.sync({ alter: true });
+    console.log('Database synced successfully.');
+
+   await createTopicIfNotExists("generate_otp", 1);
+
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  }catch(err){
+    console.log("Error in starting server",err);
   }
-  console.log(`Server is running on port ${port}`);
-});
+}
+
+startServer();
