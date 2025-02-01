@@ -1,14 +1,18 @@
 const  kafka  = require('../../config/kafka');
+const userDetails = require('../../models/userDetails.model');
 exports.signUpService = async (req, res) => {
     const { number } = req.body;
     if (!number) {
         return res.status(400).json({ message: "Number is required" });
     }
-    // const user = await userDetails.findOne({ where: { number: number } });
-    // if (user) {
-    //     return res.status(400).json({ message: "User already exists" });
-    // }
-    // await userDetails.create({ number: number });
+    const user = await userDetails.findOne({ where: { number: number } });
+    const isVerified=user?.dataValues?.is_verified;
+    if (user && isVerified ){
+        return res.status(400).json({ message: "User already exists" });
+    }else
+   if(!user){
+    await userDetails.create({ number: number });
+   }
     const producer = kafka.producer();
     await producer.connect();
     await producer.send({

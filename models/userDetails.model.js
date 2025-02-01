@@ -19,7 +19,9 @@ const User = sequelize.define('user_details', {
   number: {
     type: DataTypes.STRING,
     allowNull: false,
-    length: 10,
+    validate: {
+      len: [10, 10], // ensures exactly 10 characters
+    },
   },
   password: {
     type: DataTypes.STRING,

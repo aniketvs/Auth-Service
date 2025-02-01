@@ -5,6 +5,7 @@ const cors = require("cors");
 require("dotenv").config();
 const sequelize = require("./config/config");
 const { createTopicIfNotExists } = require("./utils/admin");
+const { initRedis } = require("./config/redisConfig");
 require('./models/userDetails.model');
 app.use(cors());
 app.use(express.json());
@@ -32,7 +33,7 @@ const startServer=async()=>{
     console.log('Database synced successfully.');
 
    await createTopicIfNotExists("generate_otp", 1);
-
+   await initRedis();
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
