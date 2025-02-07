@@ -7,6 +7,8 @@ const sequelize = require("./config/config");
 const { createTopicIfNotExists } = require("./utils/admin");
 const { initRedis } = require("./config/redisConfig");
 require('./models/userDetails.model');
+require('./models/userSession.model');
+require('./jobs/tokenDelete.cron');
 app.use(cors());
 app.use(express.json());
 app.use('/api/auth', routes);

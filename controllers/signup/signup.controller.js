@@ -20,6 +20,7 @@ exports.verifyOtp = async (req, res) => {
     }
 }
 
+
 exports.submitUserDetails = async (req, res) => {
     try{
    await submitUserDetailsService(req, res);

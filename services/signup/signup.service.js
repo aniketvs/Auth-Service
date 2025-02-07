@@ -1,4 +1,5 @@
 const  kafka  = require('../../config/kafka');
+const { getClient, initRedis } = require('../../config/redisConfig');
 const userDetails = require('../../models/userDetails.model');
 exports.signUpService = async (req, res) => {
     const { number } = req.body;
@@ -12,6 +13,15 @@ exports.signUpService = async (req, res) => {
     }else
    if(!user){
     await userDetails.create({ number: number });
+   }
+   let client=getClient();
+   if(!client || !client.isOpen){
+       await initRedis();
+       client=getClient();
+   }
+   const getOtp=await client.get(`otp:${number}`);
+   if(getOtp){
+       return res.status(400).json({message:"OTP already sent"});
    }
     const producer = kafka.producer();
     await producer.connect();
