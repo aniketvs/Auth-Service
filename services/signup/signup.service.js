@@ -27,7 +27,7 @@ exports.signUpService = async (req, res) => {
     await producer.connect();
     await producer.send({
         topic: "generate_otp",
-        messages: [{ value: JSON.stringify({number:number}) }],
+        messages: [{  value: JSON.stringify({number:number}) }],
     });
     await producer.disconnect();
     console.log("📩 Sent generate_otp event for", number);
