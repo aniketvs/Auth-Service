@@ -25,7 +25,7 @@ const loginService = async (req, res) => {
     }
     let userObj = user.dataValues;
     delete userObj.password;
-    const token = await jwt.sign({ userObj }, process.env.JWT_SECRET, { expiresIn: '24h' });
+    const token = await jwt.sign({ userObj }, process.env.JWT_SECRET, { expiresIn: '7000h' });
     userObj.token = token;
     const currentSession = await userSession.findOne({ where: { user_id: userObj.id } });
     if (currentSession) {
